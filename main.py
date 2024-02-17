@@ -1,17 +1,32 @@
 import random
 import string
+import requests
 
 def generate_random_line():
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for _ in range(7))
-
+def confirm_nitro_code(url):
+    req = requests.get("https://discord.com/api/v8/entitlements/gift-codes/" + url)
+    if req.status_code == 404:
+        print("Invalid nitro code: " + url)
+        return False
+    elif req.status_code == 200:
+        return "true"
+    
 def main():
-    print("Most Codes Will Be Invalid.")
-    num_lines = int(input("How Many Nitro Codes Would You Like To Generate>>>"))
-    for i in range(num_lines):
-        print(f"https://discord.gift/{generate_random_line()}")
+    print("This may take a long time. ")
+    num_lines = 1
+    while num_lines != 0:
+        if num_lines == 0:
+            break
+        code = generate_random_line()
+        check = confirm_nitro_code(code)
+        if check == "true":
+            print("Found nitro code: " + "https://discord.com/gifts/" + code)
+            num_lines == 0
+            pass
+        else:
+            pass
+    input("Press any key, then press enter to exit...")
 
-    input("Press any key to exit...")
-
-if __name__ == "__main__":
-    main()
+main()
